@@ -1,0 +1,23 @@
+/* DontSleep — Русский */
+"Mac won't sleep" = "Mac не уснёт";
+"Sleep is on" = "Сон включён";
+"Lid can stay closed — everything keeps running" = "Можно закрыть крышку — всё продолжит работать";
+"Close the lid and the Mac sleeps" = "Закроешь крышку — Mac заснёт";
+"Lid can stay closed" = "Крышку можно закрыть";
+"Closing the lid will sleep" = "Закроешь крышку — заснёт";
+"One sec…" = "Секунду…";
+"Turn off" = "Выключить";
+"Keep awake" = "Не давать спать";
+"Auto by apps" = "Авто-режим по приложениям";
+"Any app from the list running → eye. All closed → sleep." = "Запущено любое из списка → глаз. Все закрыты → сон.";
+"List is empty — add apps below." = "Список пуст — добавь приложения ниже.";
+"Add app" = "Добавить приложение";
+"Show in menu bar" = "Показывать в меню-баре";
+"Keep the Mac plugged in. The setting resets after reboot." = "Держи Mac на зарядке. Настройка сбрасывается после перезагрузки.";
+"Open window" = "Открыть окно";
+"Quit" = "Выйти";
+"Couldn't change it — password cancelled?" = "Не удалось изменить — пароль отменён?";
+"Press the button once manually to set up auto mode." = "Нажми кнопку один раз вручную, чтобы настроить авто-режим.";
+"Couldn't read the app." = "Не удалось прочитать приложение.";
+"Add" = "Добавить";
+"Pick an app for auto mode" = "Выбери приложение для авто-режима";

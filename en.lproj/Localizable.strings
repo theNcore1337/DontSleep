@@ -1,0 +1,23 @@
+/* DontSleep — English (base) */
+"Mac won't sleep" = "Mac won't sleep";
+"Sleep is on" = "Sleep is on";
+"Lid can stay closed — everything keeps running" = "Lid can stay closed — everything keeps running";
+"Close the lid and the Mac sleeps" = "Close the lid and the Mac sleeps";
+"Lid can stay closed" = "Lid can stay closed";
+"Closing the lid will sleep" = "Closing the lid will sleep";
+"One sec…" = "One sec…";
+"Turn off" = "Turn off";
+"Keep awake" = "Keep awake";
+"Auto by apps" = "Auto by apps";
+"Any app from the list running → eye. All closed → sleep." = "Any app from the list running → eye. All closed → sleep.";
+"List is empty — add apps below." = "List is empty — add apps below.";
+"Add app" = "Add app";
+"Show in menu bar" = "Show in menu bar";
+"Keep the Mac plugged in. The setting resets after reboot." = "Keep the Mac plugged in. The setting resets after reboot.";
+"Open window" = "Open window";
+"Quit" = "Quit";
+"Couldn't change it — password cancelled?" = "Couldn't change it — password cancelled?";
+"Press the button once manually to set up auto mode." = "Press the button once manually to set up auto mode.";
+"Couldn't read the app." = "Couldn't read the app.";
+"Add" = "Add";
+"Pick an app for auto mode" = "Pick an app for auto mode";
