@@ -77,12 +77,9 @@ func drawSymbol(_ name: String, box: CGRect, color: NSColor) {
     tinted.draw(in: CGRect(x: box.midX - w / 2, y: box.midY - h / 2, width: w, height: h))
 }
 
-// Clips `ctx` to the glyph shape (mask is top-down, so flip vertically about box).
+// Clips `ctx` to the glyph shape.
 func clipGlyph(_ ctx: CGContext, box: CGRect, mask: CGImage) {
-    let s = box.minY + box.maxY
-    ctx.translateBy(x: 0, y: s); ctx.scaleBy(x: 1, y: -1)
     ctx.clip(to: box, mask: mask)
-    ctx.scaleBy(x: 1, y: -1); ctx.translateBy(x: 0, y: -s)
 }
 
 func drawGlassGlyph(_ ctx: CGContext, _ name: String, box: CGRect, rect: CGRect,

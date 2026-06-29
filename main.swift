@@ -323,6 +323,7 @@ struct ContentView: View {
                 .foregroundStyle(.white)
                 .padding(.vertical, 16)
                 .frame(maxWidth: .infinity)
+                .contentShape(Capsule())
             }
             .buttonStyle(.plain)
             .glassEffect(
