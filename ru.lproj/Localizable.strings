@@ -13,6 +13,8 @@
 "List is empty — add apps below." = "Список пуст — добавь приложения ниже.";
 "Add app" = "Добавить приложение";
 "Show in menu bar" = "Показывать в меню-баре";
+"Keep screen on" = "Не выключать экран";
+"No display sleep, screensaver, or lock" = "Без гашения экрана, заставки и блокировки";
 "Keep the Mac plugged in. The setting resets after reboot." = "Держи Mac на зарядке. Настройка сбрасывается после перезагрузки.";
 "Open window" = "Открыть окно";
 "Quit" = "Выйти";

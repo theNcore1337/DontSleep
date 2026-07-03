@@ -39,6 +39,8 @@ about it.
   running, the Mac stays awake (eye). When they're **all** closed, normal sleep returns.
 - 🔑 **Password once** — the first change sets up a passwordless rule scoped to *only*
   `pmset disablesleep`; after that everything (incl. automation) runs silently.
+- ☀️ **Keep screen on** — an optional switch that also blocks display sleep, the
+  screensaver, and the idle lock (via IOKit power assertions — no sudo, auto-reverts).
 - 🧊 **State-aware icon** — calm indigo moon when off, green eye when awake; the Dock
   icon changes live too.
 - 🌙 **Menu-bar item** — moon/eye glyph with a quick panel; toggle its visibility.
@@ -84,6 +86,9 @@ open DontSleep.app
 
 - **Auto mode** polls `NSWorkspace` running apps every 3 s and applies the rule:
   any watched app running → `disablesleep 1`, all closed → `disablesleep 0`.
+- **Keep screen on** holds an IOKit `PreventUserIdleDisplaySleep` assertion and
+  periodically declares user activity, blocking display sleep, the screensaver, and the
+  idle lock — no system settings changed, released the moment you turn it off.
 
 > 💡 Keep the Mac on charger when working with the lid closed — airflow is restricted and
 > `disablesleep` is a system-wide setting (it resets on reboot).

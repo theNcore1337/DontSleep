@@ -2,6 +2,7 @@ import SwiftUI
 import AppKit
 import Combine
 import UniformTypeIdentifiers
+import IOKit.pwr_mgt
 
 // MARK: - System sleep control
 
@@ -96,11 +97,17 @@ final class AppModel: ObservableObject {
     @Published var watchedApps: [WatchedApp] = []
     @Published var runningWatched: Set<String> = []
 
+    // Keep-screen-on: prevents display sleep, screensaver, and idle lock.
+    @Published var keepScreenOn = false
+
     private var monitorTask: Task<Void, Never>?
+    private var screenAssertion: IOPMAssertionID = 0
+    private var screenTask: Task<Void, Never>?
     private let defaults = UserDefaults.standard
 
     init() {
         autoMode = defaults.bool(forKey: "autoMode")
+        keepScreenOn = defaults.bool(forKey: "keepScreenOn")
         if let data = defaults.data(forKey: "watchedApps"),
            let list = try? JSONDecoder().decode([WatchedApp].self, from: data) {
             watchedApps = list
@@ -112,7 +119,50 @@ final class AppModel: ObservableObject {
         refresh()
         refreshRunning()
         if autoMode { evaluate(prompt: false) }
+        if keepScreenOn { applyScreenAwake(true) }
         if monitorTask == nil { startMonitoring() }
+    }
+
+    // MARK: Keep screen on (display sleep + screensaver + lock)
+
+    func setKeepScreenOn(_ on: Bool) {
+        keepScreenOn = on
+        defaults.set(on, forKey: "keepScreenOn")
+        applyScreenAwake(on)
+    }
+
+    private func applyScreenAwake(_ on: Bool) {
+        if on {
+            if screenAssertion == 0 {
+                var id: IOPMAssertionID = 0
+                IOPMAssertionCreateWithName(kIOPMAssertionTypePreventUserIdleDisplaySleep as CFString,
+                                            IOPMAssertionLevel(kIOPMAssertionLevelOn),
+                                            "DontSleep: keep screen on" as CFString, &id)
+                screenAssertion = id
+            }
+            declareUserActive() // also resets screensaver + lock idle timers
+            if screenTask == nil {
+                screenTask = Task { @MainActor [weak self] in
+                    while !Task.isCancelled {
+                        try? await Task.sleep(for: .seconds(20))
+                        guard let self, self.keepScreenOn else { return }
+                        self.declareUserActive()
+                    }
+                }
+            }
+        } else {
+            screenTask?.cancel(); screenTask = nil
+            if screenAssertion != 0 {
+                IOPMAssertionRelease(screenAssertion)
+                screenAssertion = 0
+            }
+        }
+    }
+
+    private func declareUserActive() {
+        var id: IOPMAssertionID = 0
+        IOPMAssertionDeclareUserActivity("DontSleep: user active" as CFString,
+                                         kIOPMUserActiveLocal, &id)
     }
 
     func refresh() {
@@ -234,6 +284,7 @@ struct ContentView: View {
                 statusBlock
                 toggleButton
                 autoSection
+                keepScreenRow
                 menuBarRow
                 caption
             }
@@ -425,6 +476,27 @@ struct ContentView: View {
         if panel.runModal() == .OK, let url = panel.url {
             model.addApp(url)
         }
+    }
+
+    // Keep the screen fully on: no display sleep, no screensaver, no lock.
+    private var keepScreenRow: some View {
+        Toggle(isOn: Binding(get: { model.keepScreenOn }, set: { model.setKeepScreenOn($0) })) {
+            VStack(alignment: .leading, spacing: 2) {
+                Label("Keep screen on", systemImage: "sun.max.fill")
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(.white)
+                Text("No display sleep, screensaver, or lock")
+                    .font(.caption)
+                    .foregroundStyle(.white.opacity(0.6))
+            }
+        }
+        .toggleStyle(.switch)
+        .tint(.green)
+        .focusable(false)
+        .focusEffectDisabled()
+        .padding(.horizontal, 14)
+        .padding(.vertical, 12)
+        .background(.white.opacity(0.10), in: .rect(cornerRadius: 14))
     }
 
     // The requested switch: show / hide the menu-bar item.

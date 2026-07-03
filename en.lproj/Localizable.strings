@@ -13,6 +13,8 @@
 "List is empty — add apps below." = "List is empty — add apps below.";
 "Add app" = "Add app";
 "Show in menu bar" = "Show in menu bar";
+"Keep screen on" = "Keep screen on";
+"No display sleep, screensaver, or lock" = "No display sleep, screensaver, or lock";
 "Keep the Mac plugged in. The setting resets after reboot." = "Keep the Mac plugged in. The setting resets after reboot.";
 "Open window" = "Open window";
 "Quit" = "Quit";
