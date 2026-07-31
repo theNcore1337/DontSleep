@@ -12,7 +12,7 @@ ASSETS="$DIR/assets"
 
 echo "==> Generating icons"
 ICONGEN="$(mktemp -d)/icongen"
-xcrun swiftc -O -framework AppKit -o "$ICONGEN" "$DIR/IconGenerator.swift"
+xcrun swiftc -O -framework AppKit -framework CoreImage -o "$ICONGEN" "$DIR/IconGenerator.swift"
 rm -rf "$ASSETS"; mkdir -p "$ASSETS"
 "$ICONGEN" "$ASSETS"
 
@@ -66,8 +66,8 @@ cat > "$APP/Contents/Info.plist" <<PLIST
   <key>CFBundleName</key><string>$APP_NAME</string>
   <key>CFBundleDisplayName</key><string>$APP_NAME</string>
   <key>CFBundleIdentifier</key><string>$BUNDLE_ID</string>
-  <key>CFBundleVersion</key><string>1.2</string>
-  <key>CFBundleShortVersionString</key><string>1.2</string>
+  <key>CFBundleVersion</key><string>1.3</string>
+  <key>CFBundleShortVersionString</key><string>1.3</string>
   <key>CFBundleExecutable</key><string>$APP_NAME</string>
   <key>CFBundlePackageType</key><string>APPL</string>
   <key>CFBundleIconFile</key><string>AppIcon</string>
