@@ -141,12 +141,14 @@ func symbolImage(_ name: String, _ box: CGRect, _ color: NSColor) -> (NSImage, C
     return (tinted, CGRect(x: box.midX - sw / 2, y: box.midY - sh / 2, width: sw, height: sh))
 }
 
-func drawSymbol(_ name: String, _ box: CGRect, _ color: NSColor, glow: CGFloat = 0) {
+func drawSymbol(_ name: String, _ box: CGRect, _ color: NSColor,
+                glow: CGFloat = 0, glowColor: NSColor = .white) {
     guard let (img, rect) = symbolImage(name, box, color) else { return }
     if glow > 0 {
         NSGraphicsContext.saveGraphicsState()
         let sh = NSShadow()
-        sh.shadowColor = w(glow); sh.shadowBlurRadius = 34; sh.shadowOffset = .zero
+        sh.shadowColor = glowColor.withAlphaComponent(glow)
+        sh.shadowBlurRadius = 34; sh.shadowOffset = .zero
         sh.set()
         img.draw(in: rect)
         NSGraphicsContext.restoreGraphicsState()
@@ -168,48 +170,48 @@ func glyphMask(_ name: String, _ box: CGRect) -> CGImage? {
 // MARK: - the icon
 
 func makeIcon(_ p: Palette) -> NSBitmapImageRep {
-    let bg = background(p)
-    let soft = blurImage(bg, 46)
+    let soft = blurImage(background(p), 54)
     let rect = CGRect(x: INSET, y: INSET, width: S - 2 * INSET, height: S - 2 * INSET)
     let outer = squircle(rect)
-    let box = CGRect(x: rect.midX - rect.width * 0.26, y: rect.midY - rect.height * 0.26,
-                     width: rect.width * 0.52, height: rect.height * 0.52)
+    let accent = p.blobs[0].0
+    let box = CGRect(x: rect.midX - rect.width * 0.20, y: rect.midY - rect.height * 0.20,
+                     width: rect.width * 0.40, height: rect.height * 0.40)
 
     return render { ctx in
         // Drop shadow + opaque base so the squircle reads on any wallpaper.
         ctx.saveGState()
         ctx.setShadow(offset: CGSize(width: 0, height: -16), blur: 44, color: k(0.30).cgColor)
-        ctx.addPath(outer); ctx.setFillColor(p.base[1].cgColor); ctx.fillPath()
+        ctx.addPath(outer); ctx.setFillColor(k(0.85).cgColor); ctx.fillPath()
         ctx.restoreGState()
 
         ctx.saveGState()
         ctx.addPath(outer); ctx.clip()
 
-        // Colour mesh + grain + top sheen.
-        ctx.draw(bg, in: fullRect)
-        grain(ctx, 0.4)
-        linear(ctx, [w(0.16), w(0.0)], from: CGPoint(x: 0, y: rect.maxY),
-               to: CGPoint(x: 0, y: rect.midY))
+        // Smoked glass: the blurred colour mesh bleeds through a dark tint.
+        ctx.draw(soft, in: fullRect)
+        ctx.setFillColor(k(0.52).cgColor); ctx.fill(rect)
+        grain(ctx, 0.55)
+        linear(ctx, [w(0.14), w(0.0)], from: CGPoint(x: rect.minX, y: rect.maxY),
+               to: CGPoint(x: rect.midX, y: rect.midY))
 
-        // Soft halo behind the glass shape (no hard outline).
-        drawSymbol(p.glyph, box, w(0.30), glow: 0.55)
+        // Inner glass plate, a shade lighter than the smoked body.
+        let plate = rect.insetBy(dx: 96, dy: 96)
+        let platePath = CGPath(roundedRect: plate, cornerWidth: plate.width * 0.28,
+                               cornerHeight: plate.width * 0.28, transform: nil)
+        ctx.saveGState()
+        ctx.addPath(platePath); ctx.clip()
+        ctx.draw(soft, in: fullRect)
+        ctx.setFillColor(k(0.20).cgColor); ctx.fill(plate)
+        ctx.setFillColor(w(0.08).cgColor); ctx.fill(plate)
+        ctx.restoreGState()
+        strokeGradient(ctx, platePath, 4, [w(0.60), w(0.06)], plate)
 
-        // The glyph itself is the glass: refracted background, frost, specular, inner shadow.
-        if let mask = glyphMask(p.glyph, box) {
-            ctx.saveGState()
-            ctx.clip(to: box, mask: mask)
-            ctx.draw(soft, in: fullRect)
-            ctx.setFillColor(w(0.46).cgColor); ctx.fill(box)
-            linear(ctx, [w(0.72), w(0.04)], from: CGPoint(x: 0, y: box.maxY),
-                   to: CGPoint(x: 0, y: box.minY))
-            linear(ctx, [k(0.12), k(0.0)], from: CGPoint(x: 0, y: box.minY),
-                   to: CGPoint(x: 0, y: box.minY + box.height * 0.28))
-            ctx.restoreGState()
-        }
+        // Neon glyph.
+        drawSymbol(p.glyph, box, w(0.98), glow: 0.85, glowColor: accent)
         ctx.restoreGState()
 
         // Rim light on the squircle edge.
-        strokeGradient(ctx, outer, 3, [w(0.45), w(0.05)], rect)
+        strokeGradient(ctx, outer, 3, [w(0.50), w(0.06)], rect)
     }
 }
 
