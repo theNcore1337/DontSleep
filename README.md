@@ -1,8 +1,8 @@
 <div align="center">
 
-<img src="docs/icon-off.png" width="120" alt="DontSleep icon (sleep)"/>&nbsp;&nbsp;&nbsp;<img src="docs/icon-on.png" width="120" alt="DontSleep icon (awake)"/>
+<img src="docs/icon-off.png" width="120" alt="openeye icon (sleep)"/>&nbsp;&nbsp;&nbsp;<img src="docs/icon-on.png" width="120" alt="openeye icon (awake)"/>
 
-# DontSleep
+# openeye
 
 **Keep your Mac awake with the lid closed — so the work keeps running.**
 
@@ -15,7 +15,7 @@ for you.
 ![Apple Silicon](https://img.shields.io/badge/Apple%20Silicon-arm64-555)
 ![License](https://img.shields.io/badge/License-MIT-22a06b)
 
-<img src="docs/screenshot.png" width="340" alt="DontSleep window"/>
+<img src="docs/screenshot.png" width="340" alt="openeye window"/>
 
 </div>
 
@@ -29,7 +29,7 @@ sudo pmset -a disablesleep 1   # stays awake even with the lid shut
 sudo pmset -a disablesleep 0   # back to normal
 ```
 
-DontSleep is a one-button front end for exactly that, plus automation so you never think
+openeye is a one-button front end for exactly that, plus automation so you never think
 about it.
 
 ## Features
@@ -49,8 +49,8 @@ about it.
 
 ## Install
 
-**Download** the latest [release](https://github.com/theNcore1337/DontSleep/releases),
-unzip, drag `DontSleep.app` to **Applications**. First launch: right-click → **Open**
+**Download** the latest [release](https://github.com/theNcore1337/openeye/releases),
+unzip, drag `openeye.app` to **Applications**. First launch: right-click → **Open**
 (unsigned by an identified developer — that's expected for a self-built app).
 
 Requirements: **Apple Silicon, macOS 26+**.
@@ -61,17 +61,17 @@ No Xcode project needed — `swiftc` compiles the single source file and the scr
 assembles the bundle:
 
 ```bash
-git clone https://github.com/theNcore1337/DontSleep.git
-cd DontSleep
+git clone https://github.com/theNcore1337/openeye.git
+cd openeye
 bash build.sh
-open DontSleep.app
+open openeye.app
 ```
 
 ## How it works
 
 - **State** is read from `pmset -g` (no privileges needed).
 - **Changing** it needs root. The first toggle shows the standard macOS auth prompt and
-  installs `/etc/sudoers.d/dontsleep`:
+  installs `/etc/sudoers.d/openeye`:
 
   ```
   <you> ALL=(root) NOPASSWD: /usr/bin/pmset -a disablesleep 0, /usr/bin/pmset -a disablesleep 1
@@ -81,7 +81,7 @@ open DontSleep.app
   passwordless. Remove it any time:
 
   ```bash
-  sudo rm /etc/sudoers.d/dontsleep
+  sudo rm /etc/sudoers.d/openeye
   ```
 
 - **Auto mode** polls `NSWorkspace` running apps every 3 s and applies the rule:
@@ -99,7 +99,7 @@ open DontSleep.app
 |------|---------|
 | `main.swift` | The whole app (SwiftUI + Liquid Glass + sleep control + auto mode). |
 | `IconGenerator.swift` | Draws the glass app icons from code. |
-| `build.sh` | Compiles + bundles `DontSleep.app`. |
+| `build.sh` | Compiles + bundles `openeye.app`. |
 | `en.lproj` / `ru.lproj` | Localizations. |
 
 ## License

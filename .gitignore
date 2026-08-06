@@ -1,5 +1,5 @@
 # Build output (the bundle is rebuilt from main.swift via build.sh)
-DontSleep.app/
+openeye.app/
 
 # Generated icon assets (reproduced by build.sh from IconGenerator.swift)
 assets/

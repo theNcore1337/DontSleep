@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Builds DontSleep.app from main.swift — no Xcode GUI required.
+# Builds openeye.app from main.swift — no Xcode GUI required.
 set -euo pipefail
 
-APP_NAME="DontSleep"
-BUNDLE_ID="com.theNcore.dontsleep"
+APP_NAME="openeye"
+BUNDLE_ID="com.theNcore.openeye"
 DIR="$(cd "$(dirname "$0")" && pwd)"
 APP="$DIR/$APP_NAME.app"
 MACOS="$APP/Contents/MacOS"
@@ -66,8 +66,8 @@ cat > "$APP/Contents/Info.plist" <<PLIST
   <key>CFBundleName</key><string>$APP_NAME</string>
   <key>CFBundleDisplayName</key><string>$APP_NAME</string>
   <key>CFBundleIdentifier</key><string>$BUNDLE_ID</string>
-  <key>CFBundleVersion</key><string>1.4</string>
-  <key>CFBundleShortVersionString</key><string>1.4</string>
+  <key>CFBundleVersion</key><string>1.0</string>
+  <key>CFBundleShortVersionString</key><string>1.0</string>
   <key>CFBundleExecutable</key><string>$APP_NAME</string>
   <key>CFBundlePackageType</key><string>APPL</string>
   <key>CFBundleIconFile</key><string>AppIcon</string>

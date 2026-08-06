@@ -65,10 +65,12 @@ enum SleepControl {
     private static func installRuleAndApply(_ value: String) -> Bool {
         let user = NSUserName()
         let rule = "\(user) ALL=(root) NOPASSWD: /usr/bin/pmset -a disablesleep 0, /usr/bin/pmset -a disablesleep 1"
-        let shell = "/bin/echo '\(rule)' > /etc/sudoers.d/dontsleep"
-            + " && /bin/chmod 440 /etc/sudoers.d/dontsleep"
-            + " && /usr/sbin/visudo -cf /etc/sudoers.d/dontsleep"
-            + " && /usr/bin/pmset -a disablesleep \(value)"
+        let shell = "/bin/echo '\(rule)' > /etc/sudoers.d/openeye"
+            + " && /bin/chmod 440 /etc/sudoers.d/openeye"
+            + " && /usr/sbin/visudo -cf /etc/sudoers.d/openeye"
+            // drop the rule left by the app's previous names, if any
+            + " ; /bin/rm -f /etc/sudoers.d/dontsleep /etc/sudoers.d/dontstop"
+            + " ; /usr/bin/pmset -a disablesleep \(value)"
         let source = "do shell script \"\(shell)\" with administrator privileges"
         guard let script = NSAppleScript(source: source) else { return false }
         var error: NSDictionary?
@@ -137,7 +139,7 @@ final class AppModel: ObservableObject {
                 var id: IOPMAssertionID = 0
                 IOPMAssertionCreateWithName(kIOPMAssertionTypePreventUserIdleDisplaySleep as CFString,
                                             IOPMAssertionLevel(kIOPMAssertionLevelOn),
-                                            "DontSleep: keep screen on" as CFString, &id)
+                                            "openeye: keep screen on" as CFString, &id)
                 screenAssertion = id
             }
             declareUserActive() // also resets screensaver + lock idle timers
@@ -161,7 +163,7 @@ final class AppModel: ObservableObject {
 
     private func declareUserActive() {
         var id: IOPMAssertionID = 0
-        IOPMAssertionDeclareUserActivity("DontSleep: user active" as CFString,
+        IOPMAssertionDeclareUserActivity("openeye: user active" as CFString,
                                          kIOPMUserActiveLocal, &id)
     }
 
@@ -595,13 +597,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 }
 
-struct DontSleepApp: App {
+struct OpenEyeApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
     @StateObject private var model = AppModel()
     @AppStorage("showInMenuBar") private var showInMenuBar = true
 
     var body: some Scene {
-        Window("DontSleep", id: "main") {
+        Window("openeye", id: "main") {
             ContentView().environmentObject(model)
         }
         .windowStyle(.hiddenTitleBar)
@@ -616,4 +618,4 @@ struct DontSleepApp: App {
     }
 }
 
-DontSleepApp.main()
+OpenEyeApp.main()
